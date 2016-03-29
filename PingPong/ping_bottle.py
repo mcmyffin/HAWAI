@@ -1,22 +1,13 @@
-from bottle import Bottle, redirect, request, run,HTTPResponse ,response;# or route
+from bottle import Bottle
 from threading import Thread
-import requests
-import time
+from getpass import _raw_input
+import requests,time, sys
 
-rem_adr = "http://141.22.86.37:8080/service/sendPing"
+
+
+
 app = Bottle()
 
-
-
-class Message():
-    message = ""
-
-    def getMessage(self):
-        self.message = self.message + "<b>Ping sent</b><br>"
-        return self.message
-
-
-message = Message()
 
 @app.get('/service/sendPing')
 def sendPing():
@@ -28,17 +19,25 @@ def sendPing():
 
     t = Thread(target = postPing, args=())
     t.start()
-    return message.getMessage()
+    return "SEND"
 
 
 @app.post('/service/sendPong')
 def receivePong():
-
     print("RECEIVE PONG")
     # time.sleep(0.5)
     return sendPing()
 
 
-app.run(host="141.22.89.39", port="8081")
+
+
+if(__name__ == "__main__"):
+    host = _raw_input(">> Local Machine adress? ")
+    port = _raw_input(">> Local Machine port? ")
+    remHost = _raw_input(">> Remote Machine adress? ")
+    remPort = _raw_input(">> Remote Machine port? ")
+    rem_adr = "http://"+remHost+":"+remPort+"/service/sendPing"
+
+    app.run(host=host,port=port)
 
 
